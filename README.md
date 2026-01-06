@@ -61,18 +61,18 @@ MIS/<br>
 ├── manage.py<br>
 
 Установка и запуск проекта
-1. Клонировать проект
-git clone <repository_url>
-cd MIS
+1. Клонировать проект<br>
+git clone <repository_url><br>
+cd MIS<br>
 2. Создать виртуальное окружение<br>
 python -m venv venv<br>
 source venv/bin/activate<br>
-3. Установить зависимости
-pip install django djangorestframework djangorestframework-simplejwt psycopg2-binary
-4. Применить миграции
-python manage.py makemigrations
-python manage.py migrate
-5. Создать администратора
-python manage.py createsuperuser
-6. Запустить сервер
+3. Установить зависимости<br>
+pip install django djangorestframework djangorestframework-simplejwt psycopg2-binary<br>
+4. Применить миграции<br>
+python manage.py makemigrations<br>
+python manage.py migrate<br>
+5. Создать администратора<br>
+python manage.py createsuperuser<br>
+6. Запустить сервер<br>
 python manage.py runserver 127.0.0.1:<9932 – или любой другой не занятый порт>
