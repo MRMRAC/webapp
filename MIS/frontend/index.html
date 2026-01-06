@@ -400,8 +400,6 @@
                 loginBtn.style.display = 'none';
                 logoutSection.style.display = 'block';
                 
-                // Можно добавить получение информации о пользователе из токена
-                // или сделать запрос к API для получения данных пользователя
                 try {
                     const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
                     const username = tokenPayload.username || 'врач';
@@ -418,28 +416,25 @@
             
             // Обработчик кнопки выхода
             logoutBtn.addEventListener('click', function() {
-                // Показать подтверждение выхода
+               
                 if (confirm('Вы уверены, что хотите выйти из системы?')) {
                     localStorage.removeItem('access');
                     localStorage.removeItem('refresh');
-                    
-                    // Показать сообщение об успешном выходе
+             
                     alert('Вы успешно вышли из системы');
-                    
-                    // Перезагрузить страницу для обновления состояния
+                
                     window.location.reload();
                 }
             });
             
-            // Проверка срока действия токена (опционально)
+            // Проверка срока действия токена 
             function checkTokenExpiry() {
                 if (accessToken) {
                     try {
                         const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
-                        const expiryTime = tokenPayload.exp * 1000; // Конвертируем в миллисекунды
+                        const expiryTime = tokenPayload.exp * 1000;
                         
                         if (Date.now() >= expiryTime) {
-                            // Токен истёк
                             localStorage.removeItem('access');
                             localStorage.removeItem('refresh');
                             window.location.reload();
@@ -450,13 +445,12 @@
                 }
             }
             
-            // Проверять токен каждую минуту
+          
             setInterval(checkTokenExpiry, 60000);
             
-            // Проверка при загрузке
+          
             checkTokenExpiry();
-            
-            // Добавляем обработчик для кнопки поиска пациентов
+
             const searchBtn = document.querySelector('a[href="search.html"]');
             searchBtn.addEventListener('click', function(e) {
                 if (!accessToken) {
@@ -493,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 showRegistrationBlockedModal();
             } else {
-                // Проверяем срок действия токена
+        
                 try {
                     const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
                     const expiryTime = tokenPayload.exp * 1000;
@@ -510,7 +504,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Защита при прямом переходе на страницу регистрации
+   
     protectDirectRegistrationAccess();
 });
 
@@ -544,7 +538,7 @@ function showRegistrationBlockedModal() {
         </div>
     `;
     
-    // Добавляем стили для модального окна
+
     const style = document.createElement('style');
     style.textContent = `
         .registration-blocked-modal {
@@ -697,15 +691,13 @@ function showRegistrationBlockedModal() {
     
     document.head.appendChild(style);
     document.body.appendChild(modal);
-    
-    // Закрытие по клику вне модального окна
+
     modal.querySelector('.modal-overlay').addEventListener('click', function(e) {
         if (e.target === this) {
             closeModal();
         }
     });
-    
-    // Закрытие по Escape
+ 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeModal();
@@ -743,15 +735,14 @@ function showTokenExpiredModal() {
     `;
     
     document.body.appendChild(modal);
-    
-    // Закрытие по клику вне модального окна
+
     modal.querySelector('.modal-overlay').addEventListener('click', function(e) {
         if (e.target === this) {
             closeModal();
         }
     });
     
-    // Закрытие по Escape
+  
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeModal();
@@ -780,8 +771,8 @@ function closeModal() {
 }
 
 function protectDirectRegistrationAccess() {
-    // Если пользователь попал на страницу регистрации напрямую (не через клик по кнопке),
-    // перенаправляем на главную или показываем модальное окно
+    // Если пользователь попал на страницу регистрации напрямую,
+    // перенаправляем
     if (window.location.pathname.includes('register.html') || 
         window.location.pathname === '/register.html') {
         
@@ -789,12 +780,11 @@ function protectDirectRegistrationAccess() {
         
         if (!accessToken) {
             showRegistrationBlockedModal();
-            
-            // Заменяем всё содержимое body на модальное окно
+          
             document.body.innerHTML = '';
             document.body.appendChild(document.querySelector('.registration-blocked-modal'));
         } else {
-            // Проверяем срок действия токена
+          
             try {
                 const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
                 const expiryTime = tokenPayload.exp * 1000;
@@ -802,14 +792,12 @@ function protectDirectRegistrationAccess() {
                 if (Date.now() >= expiryTime) {
                     showTokenExpiredModal();
                     
-                    // Заменяем всё содержимое body на модальное окно
                     document.body.innerHTML = '';
                     document.body.appendChild(document.querySelector('.token-expired-modal'));
                 }
             } catch (error) {
                 showRegistrationBlockedModal();
-                
-                // Заменяем всё содержимое body на модальное окно
+        
                 document.body.innerHTML = '';
                 document.body.appendChild(document.querySelector('.registration-blocked-modal'));
             }
@@ -817,7 +805,6 @@ function protectDirectRegistrationAccess() {
     }
 }
 
-// Экспортируем функции для глобального доступа
 window.showRegistrationBlockedModal = showRegistrationBlockedModal;
 window.showTokenExpiredModal = showTokenExpiredModal;
 window.closeModal = closeModal;

@@ -307,7 +307,7 @@
         </div>
 
         <div id="results" class="cards">
-            <!-- Результаты поиска будут появляться здесь -->
+            
         </div>
     </div>
 
@@ -336,7 +336,6 @@
         // Очищаем предыдущие результаты
         resultsDiv.innerHTML = '';
         
-        // Показываем состояние загрузки (даже если запрос пустой)
         resultsDiv.innerHTML = `
             <div class="empty-state" id="loadingState">
                 <i class="fas fa-spinner fa-spin"></i>
@@ -353,7 +352,7 @@
             });
 
             if (response.status === 401) {
-                // Неавторизован - перенаправляем на логин
+            
                 logout();
                 return;
             }

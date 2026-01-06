@@ -341,11 +341,10 @@
             const submitBtn = document.getElementById('submitBtn');
             const loadingSpinner = document.getElementById('loadingSpinner');
 
-            // Сброс ошибок
+          
             errorDiv.style.display = 'none';
             errorText.textContent = '';
             
-            // Активация состояния загрузки
             submitBtn.disabled = true;
             loadingSpinner.classList.add('active');
 
@@ -369,7 +368,7 @@
                     errorText.textContent = errorData.detail || 'Неверный логин или пароль';
                     errorDiv.style.display = 'flex';
                     
-                    // Анимация ошибки
+                   
                     errorDiv.style.animation = 'none';
                     setTimeout(() => {
                         errorDiv.style.animation = 'slideIn 0.3s ease';
@@ -400,12 +399,12 @@
             }
         });
 
-        // Автофокус на поле логина
+      
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('username').focus();
         });
 
-        // Обработка нажатия Enter
+       
         document.getElementById('password').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 document.getElementById('loginForm').requestSubmit();
