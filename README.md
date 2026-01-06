@@ -64,9 +64,9 @@ MIS/<br>
 1. Клонировать проект
 git clone <repository_url>
 cd MIS
-2. Создать виртуальное окружение
-python -m venv venv
-source venv/bin/activate
+2. Создать виртуальное окружение<br>
+python -m venv venv<br>
+source venv/bin/activate<br>
 3. Установить зависимости
 pip install django djangorestframework djangorestframework-simplejwt psycopg2-binary
 4. Применить миграции
