@@ -49,16 +49,21 @@ MIS/<br>
 │   ├── wsgi.py<br>
 │   └── asgi.py<br>
 ├── frontend/<br>
-│   ├── index.html<br>
-│   ├── login.html<br>
-│   ├── register.html<br>
-│   ├── search.html<br>
-│   ├── styles.css<br>
-│   ├── login.js<br>
-│   ├── register.js<br>
-│   └── search.js<br>
-├── db.sqlite3<br>
-├── manage.py<br>
+│    ├── index.html              # Главная страница<br>
+│    ├── login.html              # Страница входа<br>
+│    ├── login.js                # Скрипт для входа<br>
+│    ├── register.html           # Страница регистрации<br>
+│    ├── register.js             # Скрипт для регистрации<br>
+│    ├── search.html             # Страница поиска<br>
+│    ├── search.js               # Скрипт поиска<br>
+│    ├── styles.css              # Основные стили<br>
+│    │<br>
+│    ├── medical-card-documents.html    # Документы мед. карты (новый)<br>
+│    ├── medical-document-create.html   # Создание документа (новый)<br>
+│    ├── medical-document-view.html     # Просмотр документа (новый)<br>
+│    ├── patient.html                   # Страница пациента (новый)<br>
+│    ├── db.sqlite3<br>
+│  ├── manage.py<br>
 
 Установка и запуск проекта
 1. Клонировать проект
