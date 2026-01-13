@@ -322,7 +322,7 @@
     document.getElementById('homeBtn').addEventListener('click', goToHome);
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
-    // Поиск при нажатии Enter в поле ввода
+
     document.getElementById('searchQuery').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             loadPatients();
@@ -333,7 +333,7 @@
         const query = document.getElementById('searchQuery').value.trim();
         const resultsDiv = document.getElementById('results');
         
-        // Очищаем предыдущие результаты
+        
         resultsDiv.innerHTML = '';
         
         resultsDiv.innerHTML = `
@@ -363,7 +363,7 @@
 
             const data = await response.json();
 
-            // Очищаем состояние загрузки
+            
             resultsDiv.innerHTML = '';
 
             if (data.length === 0) {
@@ -379,7 +379,7 @@
                 return;
             }
 
-            // Отображаем найденных пациентов
+         
             data.forEach(user => {
                 /*const card = document.createElement('div');
                 card.className = 'card';
@@ -437,7 +437,7 @@ resultsDiv.appendChild(card);
         window.location.href = '/login.html';
     }
 
-    // Автоматическая загрузка всех пациентов при открытии страницы
+ 
     document.addEventListener('DOMContentLoaded', function() {
         loadPatients();
     });

@@ -111,7 +111,7 @@ from .document_forms import FORMS_MAP
 
 class MedicalDocumentDetailView(APIView):
 
-    # 🔹 ПРОСМОТР ДОКУМЕНТА
+    # ПРОСМОТР ДОКУМЕНТА
     def get(self, request, doc_id):
         doc = get_object_or_404(MedicalDocument, id=doc_id)
 
@@ -132,7 +132,7 @@ class MedicalDocumentDetailView(APIView):
             ]
         })
 
-    # 🔹 РЕДАКТИРОВАНИЕ ДОКУМЕНТА
+    # РЕДАКТИРОВАНИЕ ДОКУМЕНТА
     def put(self, request, doc_id):
         doc = get_object_or_404(MedicalDocument, id=doc_id)
 
