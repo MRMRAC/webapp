@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание медицинского документа</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+        body {
+            font-family: "Segoe UI", system-ui, sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 900px;
+            margin: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #cbd5f5;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        textarea[readonly] {
+            background: #f1f5f9;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-card">
+    <h1>
+        <i class="fas fa-file-medical"></i>
+        <span id="docTitle">Создание документа</span>
+    </h1>
+
+    <form id="documentForm"></form>
+
+    <div class="actions">
+        <button class="btn-secondary" onclick="goBack()">Назад</button>
+        <button class="btn-primary" onclick="saveDocument()">Сохранить</button>
+    </div>
+</div>
+
+<script>
+    const accessToken = localStorage.getItem('access');
+    const params = new URLSearchParams(window.location.search);
+    const cardId = params.get('card_id');
+    const type = params.get('type');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadFormSchema();
+    });
+
+    async function loadFormSchema() {
+        const res = await fetch(`/api/documents/form-schema/${type}/`, {
+            headers: { 'Authorization': 'Bearer ' + accessToken }
+        });
+
+        const fields = await res.json();
+        const form = document.getElementById('documentForm');
+
+        document.getElementById('docTitle').innerText = type.replaceAll('_', ' ');
+
+        fields.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'field';
+
+            let input = '';
+
+            if (f.type === 'textarea' || f.type === 'readonly-textarea') {
+                input = `<textarea name="${f.code}" ${f.type === 'readonly-textarea' ? 'readonly' : ''}></textarea>`;
+            } else if (f.type === 'select') {
+                input = `<select name="${f.code}">
+                    ${f.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+                </select>`;
+            } else {
+                input = `<input type="${f.type}" name="${f.code}">`;
+            }
+
+            div.innerHTML = `<label>${f.label}</label>${input}`;
+            form.appendChild(div);
+        });
+    }
+
+    async function saveDocument() {
+        const form = document.getElementById('documentForm');
+        const data = {};
+
+        new FormData(form).forEach((v, k) => data[k] = v);
+
+        await fetch(`/api/medical-cards/${cardId}/documents/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                document_type: type,
+                fields: data
+            })
+        });
+
+        goBack();
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>

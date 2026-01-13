@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('clinic.urls')),  # API из приложения clinic
@@ -27,4 +28,14 @@ urlpatterns = [
     path('register.html', TemplateView.as_view(template_name='register.html')),
     path('login.html', TemplateView.as_view(template_name='login.html')),
     path('search.html', TemplateView.as_view(template_name='search.html')),
+
+    path('patients/<int:patient_id>/', TemplateView.as_view(template_name='patient.html') ),
+    path('medical-card-documents.html', TemplateView.as_view(template_name='medical-card-documents.html')),
+    path('medical-document-create.html', TemplateView.as_view(
+        template_name='medical-document-create.html'
+    )),
+
+    path('medical-document-view.html', TemplateView.as_view(
+        template_name='medical-document-view.html'
+    )),
 ]

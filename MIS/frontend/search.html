@@ -381,7 +381,7 @@
 
             // Отображаем найденных пациентов
             data.forEach(user => {
-                const card = document.createElement('div');
+                /*const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
                     <i class="fas fa-user-circle patient-icon"></i>
@@ -391,7 +391,25 @@
                     ${user.phone ? `<p><strong><i class="fas fa-phone"></i> Телефон:</strong> ${user.phone}</p>` : ''}
                     ${user.date_of_birth ? `<p><strong><i class="fas fa-birthday-cake"></i> Дата рождения:</strong> ${user.date_of_birth}</p>` : ''}
                 `;
-                resultsDiv.appendChild(card);
+                resultsDiv.appendChild(card);*/
+                const card = document.createElement('div');
+card.className = 'card';
+card.style.cursor = 'pointer';
+
+card.addEventListener('click', () => {
+    window.location.href = `/patients/${user.id}/`;
+});
+
+card.innerHTML = `
+    <i class="fas fa-user-circle patient-icon"></i>
+    <h3>${user.first_name || ''} ${user.last_name || ''}</h3>
+    <p><strong><i class="fas fa-user"></i> Логин:</strong> ${user.username || 'Не указан'}</p>
+    <p><strong><i class="fas fa-envelope"></i> Email:</strong> ${user.email || 'Не указан'}</p>
+    ${user.phone ? `<p><strong><i class="fas fa-phone"></i> Телефон:</strong> ${user.phone}</p>` : ''}
+    ${user.date_of_birth ? `<p><strong><i class="fas fa-birthday-cake"></i> Дата рождения:</strong> ${user.date_of_birth}</p>` : ''}
+`;
+
+resultsDiv.appendChild(card);
             });
 
         } catch (error) {

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Медицинский документ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f8fafc;
+            padding: 40px;
+        }
+
+        .card {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .save {
+            background: #2563eb;
+            color: white;
+        }
+
+        .back {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1 id="docTitle"></h1>
+
+    <form id="docForm"></form>
+
+    <div class="actions">
+        <button class="back" onclick="history.back()">Назад</button>
+        <button class="save" onclick="saveDocument()">Сохранить</button>
+    </div>
+</div>
+
+<script>
+    const accessToken = localStorage.getItem('access');
+    const docId = new URLSearchParams(location.search).get('doc_id');
+
+    let fields = [];
+
+    document.addEventListener('DOMContentLoaded', loadDocument);
+
+    async function loadDocument() {
+        const res = await fetch(`/api/documents/${docId}/`, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+
+        const data = await res.json();
+
+        document.getElementById('docTitle').textContent = data.title;
+        fields = data.fields;
+
+        const form = document.getElementById('docForm');
+
+        fields.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'field';
+
+            div.innerHTML = `
+                <label>${f.label}</label>
+                <textarea name="${f.code}">${f.value || ''}</textarea>
+            `;
+
+            form.appendChild(div);
+        });
+    }
+
+    async function saveDocument() {
+        const data = {};
+        document.querySelectorAll('#docForm textarea').forEach(el => {
+            data[el.name] = el.value;
+        });
+
+        await fetch(`/api/documents/${docId}/`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({fields: data})
+        });
+
+        alert('Документ обновлён');
+    }
+</script>
+
+</body>
+</html>

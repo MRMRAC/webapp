@@ -20,8 +20,46 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+from .models import MedicalCard
 
+
+class MedicalCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicalCard
+        fields = '__all__'
+        read_only_fields = ('patient',)
+# class PatientSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Patient
+#         fields = ('id', 'username', 'email', 'first_name', 'last_name')
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'date_joined',
+        ]
+from .models import MedicalDocument
+class MedicalDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicalDocument
+        fields = [
+            'id',
+            'title',
+            'guid',
+            'created_at',
+            'card_prefix',
+            'card_number',
+            'medical_card',
+        ]
+        read_only_fields = (
+            'guid',
+            'created_at',
+            'card_prefix',
+            'card_number',
+            'medical_card',
+        )

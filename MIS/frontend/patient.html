@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Карта пациента | Медицинская информационная система</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #eef2ff;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f2ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .header-left p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .logout-btn {
+            background: white;
+            color: var(--gray);
+            border: 1px solid var(--gray-light);
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: #f8f9fa;
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* Patient Info Card */
+        .patient-info-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .patient-info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .patient-details h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray);
+        }
+
+        .meta-item i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        /* Create Card Button */
+        .create-card-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .create-card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Form */
+        .form-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .form-header h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-form {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-form:hover {
+            background: var(--gray-light);
+            color: var(--danger);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .form-input[readonly] {
+            background: var(--light);
+            color: var(--gray);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a56d4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #dde1e7;
+        }
+
+        /* Medical Cards */
+        .medical-cards-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0 20px;
+        }
+
+        .medical-cards-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cards-count {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .medical-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .medical-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .medical-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .card-type {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-number i {
+            color: var(--success);
+        }
+
+        .card-period {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .card-note {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--gray);
+            border-left: 3px solid var(--gray-light);
+        }
+
+        .no-cards {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .no-cards i {
+            font-size: 48px;
+            color: var(--gray-light);
+            margin-bottom: 20px;
+        }
+
+        .no-cards h3 {
+            color: var(--gray);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .no-cards p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+
+        .status-inactive {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .patient-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .patient-meta {
+                justify-content: center;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for new cards */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .medical-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1><i class="fas fa-hospital-user"></i> Карта пациента</h1>
+                <p>Просмотр и управление медицинскими картами пациента</p>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='/login.html'">
+                <i class="fas fa-sign-out-alt"></i> Выход
+            </button>
+        </div>
+
+        <!-- Patient Info -->
+        <div class="patient-info-card">
+            <div class="patient-header">
+                <div class="patient-details">
+                    <h2 id="patientName">Загрузка...</h2>
+                    <div class="patient-meta" id="patientMeta">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+                <div class="patient-avatar" id="patientAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Medical Card Button -->
+        <button class="create-card-btn" onclick="toggleForm()">
+            <i class="fas fa-plus-circle"></i> Создать новую медицинскую карту
+        </button>
+
+        <!-- Create Medical Card Form -->
+        <div id="createForm" class="form-card">
+            <div class="form-header">
+                <h3><i class="fas fa-file-medical"></i> Новая медицинская карта</h3>
+                <button class="close-form" onclick="toggleForm()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-stethoscope"></i> Тип карты</label>
+                    <select id="cardType" class="form-select">
+                        <option value="">Выберите тип карты</option>
+                        <option value="Амбулаторная">Амбулаторная карта</option>
+                        <option value="Стационарная">Стационарная карта</option>
+                        <option value="Дневной стационар">Карта дневного стационара</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-hashtag"></i> Префикс карты</label>
+                    <input type="text" id="prefix" class="form-input" placeholder="Префикс" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-id-card"></i> Номер карты</label>
+                    <input type="text" id="number" class="form-input" placeholder="Номер" readonly>
+                </div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-calendar-plus"></i> Дата начала</label>
+                    <input type="date" id="startDate" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-calendar-minus"></i> Дата окончания (необязательно)</label>
+                    <input type="date" id="endDate" class="form-input">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-comment-medical"></i> Примечания</label>
+                <textarea id="note" class="form-textarea" placeholder="Введите примечания к медицинской карте..."></textarea>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="toggleForm()">
+                    <i class="fas fa-times"></i> Отмена
+                </button>
+                <button class="btn btn-primary" onclick="createMedicalCard()">
+                    <i class="fas fa-save"></i> Сохранить карту
+                </button>
+            </div>
+        </div>
+
+        <!-- Medical Cards Section -->
+        <div class="medical-cards-header">
+            <h2><i class="fas fa-folder-medical"></i> Медицинские карты <span class="cards-count" id="cardsCount">0</span></h2>
+        </div>
+        
+        <div id="medicalCards" class="cards-grid">
+            <!-- Filled by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Your existing JavaScript code remains exactly the same
+        function getPatientIdFromUrl() {
+            const currentUrl = window.location.pathname;
+            const match = currentUrl.match(/\/patients\/(\d+)\/?/);
+            
+            if (match && match[1]) {
+                const patientId = parseInt(match[1], 10);
+                console.log('ID пациента:', patientId);
+                return patientId;
+            }
+            
+            console.error('Не удалось извлечь ID пациента из URL');
+            return null;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const patientId = getPatientIdFromUrl();
+        const accessToken = localStorage.getItem('access');
+
+        if (!accessToken) {
+            window.location.href = '/login.html';
+        }
+
+        async function loadMedicalCards() {
+            const res = await fetch(`/api/patients/${patientId}/medical-cards/`, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                }
+            });
+
+            const cards = await res.json();
+            const container = document.getElementById('medicalCards');
+            container.innerHTML = '';
+            
+            // Update cards count
+            document.getElementById('cardsCount').textContent = cards.length || 0;
+
+            if (!cards || cards.length === 0) {
+                container.innerHTML = `
+                    <div class="no-cards">
+                        <i class="fas fa-file-medical-alt"></i>
+                        <h3>Медицинские карты не найдены</h3>
+                        <p>Создайте первую медицинскую карту для этого пациента</p>
+                    </div>
+                `;
+                return;
+            }
+
+            cards.forEach(card => {
+                const div = document.createElement('div');
+                div.className = 'medical-card';
+                div.style.cursor = 'pointer';
+                div.innerHTML = `
+                    <div class="card-type">${card.card_type}</div>
+                    <div class="card-number">
+                        <i class="fas fa-hashtag"></i>
+                        ${card.prefix}-${card.number}
+                    </div>
+                    <div class="card-period">
+                        <i class="fas fa-calendar-alt"></i>
+                        <strong>Период:</strong> ${card.start_date} — ${card.end_date ?? 'по настоящее время'}
+                    </div>
+                    ${card.note ? `
+                        <div class="card-note">
+                            <strong><i class="fas fa-sticky-note"></i> Примечание:</strong> ${card.note}
+                        </div>
+                    ` : ''}
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <span class="status-badge status-active">
+                            <i class="fas fa-check-circle"></i> Активна
+                        </span>
+                        <span style="color: var(--gray); font-size: 12px; margin-left: auto;">
+                            <i class="fas fa-clock"></i> Создана: ${card.created_at || 'Не указано'}
+                        </span>
+                    </div>
+                `;
+                div.onclick = () => {
+                    window.location.href = `/medical-card-documents.html?card_id=${card.id}`;
+                };
+                container.appendChild(div);
+            });
+        }
+
+        async function loadPatientInfo() {
+            const res = await fetch(`/api/patients/${patientId}/`, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            const user = await res.json();
+
+            // Update patient name
+            document.getElementById('patientName').textContent = `${user.first_name} ${user.last_name}`;
+            
+            // Update patient avatar with initials
+            const avatar = document.getElementById('patientAvatar');
+            const initials = `${user.first_name?.charAt(0) || ''}${user.last_name?.charAt(0) || ''}`;
+            avatar.innerHTML = initials || '<i class="fas fa-user"></i>';
+            
+            // Update patient meta information
+            document.getElementById('patientMeta').innerHTML = `
+                <div class="meta-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>${user.email || 'Email не указан'}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Логин: ${user.username || 'Не указан'}</span>
+                </div>
+                ${user.phone ? `
+                    <div class="meta-item">
+                        <i class="fas fa-phone"></i>
+                        <span>${user.phone}</span>
+                    </div>
+                ` : ''}
+                ${user.date_of_birth ? `
+                    <div class="meta-item">
+                        <i class="fas fa-birthday-cake"></i>
+                        <span>${user.date_of_birth}</span>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function getCurrentDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}${month}${day}`;
+        }
+
+        function getDisplayDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${day}.${month}.${year}`;
+        }
+
+        function generateTimeHash() {
+            const timestamp = Date.now().toString();
+            let hash = 0;
+            
+            for (let i = 0; i < timestamp.length; i++) {
+                const char = timestamp.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            
+            return Math.abs(hash).toString().padStart(8, '0');
+        }
+
+        function generatePrefix(cardType) {
+            const currentDate = getCurrentDate();
+            
+            switch(cardType) {
+                case 'Амбулаторная':
+                    return `A${currentDate}`;
+                case 'Стационарная':
+                    return `H${currentDate}`;
+                case 'Дневной стационар':
+                    return `D${currentDate}`;
+                default:
+                    return `U${currentDate}`;
+            }
+        }
+
+        document.getElementById('cardType').addEventListener('change', function() {
+            const cardType = this.value;
+            const prefixField = document.getElementById('prefix');
+            
+            if (cardType) {
+                const prefix = generatePrefix(cardType);
+                prefixField.value = prefix;
+            }
+        });
+
+        async function createMedicalCard() {
+            const cardType = document.getElementById('cardType');
+            const prefix = document.getElementById('prefix');
+            const number = document.getElementById('number');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            const note = document.getElementById('note');
+
+            // Auto-generate number if empty
+            if (!number.value) {
+                number.value = generateTimeHash();
+            }
+
+            // Auto-generate prefix if empty
+            if (!prefix.value && cardType.value) {
+                prefix.value = generatePrefix(cardType.value);
+            }
+
+            // Validate required fields
+            if (!cardType.value || !prefix.value || !number.value || !startDate.value) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/patients/${patientId}/medical-cards/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        card_type: cardType.value,
+                        prefix: prefix.value,
+                        number: number.value,
+                        start_date: startDate.value,
+                        end_date: endDate.value || null,
+                        note: note.value
+                    })
+                });
+
+                if (response.ok) {
+                    // Show success message
+                    const successDiv = document.createElement('div');
+                    successDiv.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #4CAF50;
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease-out;
+                    `;
+                    successDiv.innerHTML = '<i class="fas fa-check-circle"></i> Медицинская карта успешно создана!';
+                    document.body.appendChild(successDiv);
+                    
+                    setTimeout(() => {
+                        successDiv.style.animation = 'slideOut 0.3s ease-out';
+                        setTimeout(() => successDiv.remove(), 300);
+                    }, 3000);
+
+                    toggleForm();
+                    loadMedicalCards();
+                } else {
+                    alert('Ошибка при создании карты');
+                }
+            } catch (error) {
+                console.error('Error creating medical card:', error);
+                alert('Ошибка сети при создании карты');
+            }
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('createForm');
+            const isVisible = form.style.display === 'block';
+            
+            if (!isVisible) {
+                // Auto-fill today's date
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('startDate').value = today;
+                
+                // Auto-generate number
+                document.getElementById('number').value = generateTimeHash();
+                
+                // Auto-generate prefix if card type is selected
+                const cardType = document.getElementById('cardType').value;
+                if (cardType) {
+                    document.getElementById('prefix').value = generatePrefix(cardType);
+                }
+            }
+            
+            form.style.display = isVisible ? 'none' : 'block';
+            
+            // Scroll to form when opening
+            if (!isVisible) {
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPatientInfo();
+            loadMedicalCards();
+            
+            // Set min date for date inputs to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+        });
+
+        // Add CSS for success message animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

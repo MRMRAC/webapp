@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Документы медицинской карты</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --radius: 14px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --transition: 0.25s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        header {
+            background: white;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        main {
+            padding: 30px 40px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: var(--radius);
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+
+        .btn-secondary {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .documents-table {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border-collapse: collapse;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .documents-table th,
+        .documents-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .documents-table th {
+            background: #f1f5f9;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: var(--secondary);
+            letter-spacing: 0.04em;
+        }
+
+        .documents-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .doc-title {
+            font-weight: 600;
+        }
+
+        .doc-type {
+            font-size: 13px;
+            color: var(--secondary);
+        }
+
+        .doc-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--secondary);
+            margin-right: 10px;
+        }
+
+        .doc-actions button:hover {
+            color: var(--primary);
+        }
+
+        /* ===== Modal ===== */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            width: 640px;
+            max-width: 95%;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .doc-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 25px 0;
+        }
+
+        .doc-type-grid button {
+            background: var(--primary-light);
+            border: none;
+            border-radius: 14px;
+            padding: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .doc-type-grid button i {
+            font-size: 20px;
+        }
+
+        .doc-type-grid button:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>
+        <i class="fas fa-folder-open"></i>
+        Документы медицинской карты
+    </h1>
+
+    <button class="btn btn-secondary" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Назад к картам
+    </button>
+</header>
+
+<main>
+
+    <div class="toolbar">
+        <div></div>
+        <button class="btn btn-primary" onclick="openDocTypeModal()">
+            <i class="fas fa-plus"></i>
+            Создать документ
+        </button>
+    </div>
+
+    <table class="documents-table">
+        <thead>
+        <tr>
+            <th>Документ</th>
+            <th>Тип</th>
+            <th>Дата создания</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="documentsBody">
+        <!-- Documents -->
+        </tbody>
+    </table>
+
+</main>
+
+<!-- ===== Modal ===== -->
+<div id="docTypeModal" class="modal-overlay">
+    <div class="modal">
+        <h3>
+            <i class="fas fa-file-medical"></i>
+            Выберите тип документа
+        </h3>
+
+        <div class="doc-type-grid">
+            <button onclick="createDocument('PRIMARY_VISIT')">
+                <i class="fas fa-user-md"></i> Первичный приём
+            </button>
+
+            <button onclick="createDocument('HEAD_DOCTOR_REVIEW')">
+                <i class="fas fa-user-tie"></i> Осмотр с заведующим
+            </button>
+
+            <button onclick="createDocument('PREOPERATIVE_EPICRISIS')">
+                <i class="fas fa-notes-medical"></i> Предоперационный эпикриз
+            </button>
+
+            <button onclick="createDocument('OPERATION')">
+                <i class="fas fa-procedures"></i> Операция
+            </button>
+
+            <button onclick="createDocument('DISCHARGE_EPICRISIS')">
+                <i class="fas fa-file-signature"></i> Выписной эпикриз
+            </button>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeDocTypeModal()">
+                Отмена
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const accessToken = localStorage.getItem('access');
+    const cardId = new URLSearchParams(window.location.search).get('card_id');
+
+    document.addEventListener('DOMContentLoaded', loadDocuments);
+
+    async function loadDocuments() {
+        const res = await fetch(`/api/medical-cards/${cardId}/documents/`, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+
+        const data = await res.json();
+        const body = document.getElementById('documentsBody');
+        body.innerHTML = '';
+
+        data.forEach(doc => {
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                <td class="doc-title">${doc.title}</td>
+                <td class="doc-type">${doc.type || '-'}</td>
+                <td>${new Date(doc.created_at).toLocaleDateString()}</td>
+                <td class="doc-actions">
+                    <button title="Открыть" onclick="openDocument(${doc.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            `;
+
+            body.appendChild(tr);
+        });
+    }
+
+    function openDocTypeModal() {
+        document.getElementById('docTypeModal').style.display = 'flex';
+    }
+
+    function closeDocTypeModal() {
+        document.getElementById('docTypeModal').style.display = 'none';
+    }
+
+    function createDocument(type) {
+        window.location.href =
+            `/medical-document-create.html?card_id=${cardId}&type=${type}`;
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+
+function openDocument(docId) {
+    window.location.href = `/medical-document-view.html?doc_id=${docId}`;
+}
+
+</script>
+
+</body>
+</html>
